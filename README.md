@@ -1,6 +1,6 @@
 # MySQL Auto Partitions
 
-**Mysql Auto Partition** is a script that aims to automatically manage range partitionned tables by date and purge old partitions. It use the Event scheduler to trigger procedure calls every 6 hours.
+**Mysql Auto Partition** is a script that aims to automatically manage range partitionned tables by date and purge old partitions. It use the Event scheduler to trigger procedure calls every hour.
 
 ## Prerequist
  - The Event Scheduler shall be activated [checkout documentation](https://dev.mysql.com/doc/refman/5.7/en/events-configuration.html)
@@ -23,8 +23,8 @@ Execute the **partitions.sql** script on your database. This will define the pro
 Then for initialize a new table you just have to do the following :
 ```sql
 INSERT INTO `manage_partitions` VALUES('test_table', 'date', 'daily', 3, 30, NULL, 'Testing table');
-CALL `init_partitons`(;
+CALL `init_partitons`();
 ```
 
 ## Licence
-)
+Apache License, Version 2.0

@@ -433,17 +433,18 @@ END$$
 -- -----------------------------------------------------------------------------
 -- EVENT definition for managing partitions
 -- -----------------------------------------------------------------------------
-CREATE EVENT IF NOT EXISTS `e_part_manage`
-     ON SCHEDULE EVERY 6 HOUR
-      STARTS '2016-01-01 00:00:00'
-      ON COMPLETION PRESERVE
-      ENABLE
-      COMMENT 'Creating and dropping partitions'
- DO BEGIN
-           CALL database.create_next_partitions();
-           CALL database.drop_partitions();
+CREATE EVENT IF NOT EXISTS `e_part_manage` ON SCHEDULE EVERY 1 HOUR ON COMPLETION PRESERVE ENABLE COMMENT 'Creating and dropping partitions'
+DO BEGIN
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        DO RELEASE_LOCK('part_manage_lock');
+    END;
+    IF GET_LOCK('part_manage_lock', 0) THEN
+        CALL create_next_partitions();
+        CALL drop_partitions();
+    END IF;
+    DO RELEASE_LOCK('part_manage_lock');
 END$$
 
 DELIMITER ;
-
 
